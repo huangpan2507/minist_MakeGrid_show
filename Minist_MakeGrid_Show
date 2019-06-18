@@ -39,7 +39,7 @@ to_pil.show()
 dataloader = DataLoader(dataset, shuffle=True, batch_size=16)
 dataiter = iter(dataloader)                           # dataiter为迭代器
 print(len(dataiter))                                  # 10000个手写数据 =16*625 ，此处len为 625
-data = next(dataiter)[0]                              # a为list对象，通过next获取下一条数据，此处是获取第一个数据
+data = next(dataiter)[0].float()                              # a为list对象，通过next获取下一条数据，此处是获取第一个数据
 print('data.size', data.size(), data)                 # 如果是按照归一化单通道，则tensor [16, 1, 224,224] 否则为[16, 3, 224, 224]
 img = make_grid(data, 4)         # 拼成4*4的网格图片
 to_pil(img).show()

@@ -26,20 +26,20 @@ resnet34.fc = nn.Linear(512, 10)
 dataset = datasets.MNIST('data/', download=True, train=False,
                          transform=transform)
 
-'''a = (torch.randn(3, 64, 64)).float()
-to_pil = transforms.ToPILImage()(a * 0.2 + 0.4)
-to_pil.show() '''
 
 to_pil = transforms.ToPILImage()
-# to_pil(torch.randn(3, 64, 64)).show()
 
-len(dataset)
+'''a = (torch.randn(3, 64, 64)).float()
+to_pil = transforms.ToPILImage()(a * 0.2 + 0.4)
+to_pil.show()
+# to_pil(torch.randn(3, 64, 64)).show() '''
+
 
 dataloader = DataLoader(dataset, shuffle=True, batch_size=16)
 dataiter = iter(dataloader)
-img = make_grid(next(dataiter)[0], 4)
+img = make_grid(next(dataiter)[0], 4)    # 拼成4*4的网格
 to_pil(img).show()
 
 save_image(img, 'a.png')
-Image.open('a.png')
+Image.open('a.png')                      # 读取保存的图片
 

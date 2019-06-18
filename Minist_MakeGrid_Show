@@ -1,0 +1,45 @@
+from torchvision import models
+from torch import nn
+from torchvision import datasets
+from torchvision import transforms
+import torch
+from torch.utils.data import DataLoader
+from torchvision.utils import make_grid, save_image
+from PIL import Image
+
+
+
+transform = transforms.Compose([
+    transforms.RandomSizedCrop(224),
+    transforms.RandomHorizontalFlip(),
+    transforms.ToTensor(),
+    # 因为minist是单通道灰色图，因此此处要么扩展为三通道，要么只对三通道归一化
+    transforms.Normalize((0.1307,), (0.3081,))
+    # transforms.Lambda(lambda x: x.repeat(3, 1, 1)),
+    # transforms.Normalize(mean=[0.4, 0.4, 0.4], std=[0.2, 0.2, 0.2]),
+
+])
+
+resnet34 = models.resnet34(pretrained=True, num_classes=1000)
+resnet34.fc = nn.Linear(512, 10)
+
+dataset = datasets.MNIST('data/', download=True, train=False,
+                         transform=transform)
+
+'''a = (torch.randn(3, 64, 64)).float()
+to_pil = transforms.ToPILImage()(a * 0.2 + 0.4)
+to_pil.show() '''
+
+to_pil = transforms.ToPILImage()
+# to_pil(torch.randn(3, 64, 64)).show()
+
+len(dataset)
+
+dataloader = DataLoader(dataset, shuffle=True, batch_size=16)
+dataiter = iter(dataloader)
+img = make_grid(next(dataiter)[0], 4)
+to_pil(img).show()
+
+save_image(img, 'a.png')
+Image.open('a.png')
+

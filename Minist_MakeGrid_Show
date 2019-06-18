@@ -14,9 +14,9 @@ transform = transforms.Compose([
     transforms.RandomHorizontalFlip(),
     transforms.ToTensor(),
     # 因为minist是单通道灰色图，因此此处要么扩展为三通道，要么只对三通道归一化
-    transforms.Normalize((0.1307,), (0.3081,))
-    # transforms.Lambda(lambda x: x.repeat(3, 1, 1)),
-    # transforms.Normalize(mean=[0.4, 0.4, 0.4], std=[0.2, 0.2, 0.2]),
+    # transforms.Normalize((0.1307,), (0.3081,))
+     transforms.Lambda(lambda x: x.repeat(3, 1, 1)),
+     transforms.Normalize(mean=[0.4, 0.4, 0.4], std=[0.2, 0.2, 0.2]),
 
 ])
 
@@ -26,20 +26,24 @@ resnet34.fc = nn.Linear(512, 10)
 dataset = datasets.MNIST('data/', download=True, train=False,
                          transform=transform)
 
-
 to_pil = transforms.ToPILImage()
 
-'''a = (torch.randn(3, 64, 64)).float()
+
+'''这是将随机的3通道，64*64的显示出来
+a = (torch.randn(3, 64, 64)).float()
 to_pil = transforms.ToPILImage()(a * 0.2 + 0.4)
-to_pil.show()
-# to_pil(torch.randn(3, 64, 64)).show() '''
+to_pil.show() 
+# to_pil(torch.randn(3, 64, 64)).show()'''
 
 
 dataloader = DataLoader(dataset, shuffle=True, batch_size=16)
-dataiter = iter(dataloader)
-img = make_grid(next(dataiter)[0], 4)    # 拼成4*4的网格
+dataiter = iter(dataloader)                           # dataiter为迭代器
+print(len(dataiter))                                  # 10000个手写数据 =16*625 ，此处len为 625
+data = next(dataiter)[0]                              # a为list对象，通过next获取下一条数据，此处是获取第一个数据
+print('data.size', data.size(), data)                 # 如果是按照归一化单通道，则tensor [16, 1, 224,224] 否则为[16, 3, 224, 224]
+img = make_grid(data, 4)         # 拼成4*4的网格图片
 to_pil(img).show()
 
 save_image(img, 'a.png')
-Image.open('a.png')                      # 读取保存的图片
+Image.open('a.png')
 
